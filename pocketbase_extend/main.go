@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
@@ -15,6 +16,7 @@ import (
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
 	"github.com/pocketbase/pocketbase/core"
+	"github.com/pocketbase/pocketbase/plugins/migratecmd"
 )
 
 func main() {
@@ -68,6 +70,15 @@ func main() {
 		})
 
 		return nil
+	})
+
+	// loosely check if it was executed using "go run"
+	isGoRun := strings.HasPrefix(os.Args[0], os.TempDir())
+
+	migratecmd.MustRegister(app, app.RootCmd, migratecmd.Config{
+		// enable auto creation of migration files when making collection changes in the Admin UI
+		// (the isGoRun check is to enable it only during development)
+		Automigrate: isGoRun,
 	})
 
 	if err := app.Start(); err != nil {
