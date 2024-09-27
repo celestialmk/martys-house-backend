@@ -19,4 +19,4 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          script: "cd /webapps/pb/manage_pocketbase/pocketbase_extend && chmod +x ./.scripts/deploy.sh && ./.scripts/deploy.sh"
+          script: "cd /webapps/pb/manage_pocketbase/pocketbase_extend && chmod +x ../.scripts/deploy.sh && ../.scripts/deploy.sh"
