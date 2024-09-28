@@ -1,18 +1,12 @@
 package main
 
 import (
-	"context"
 	"log"
 	"net/http"
 	"os"
-	"path/filepath"
 	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v5"
-
-	"github.com/google/generative-ai-go/genai"
-	"google.golang.org/api/option"
 
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/apis"
@@ -22,15 +16,15 @@ import (
 
 func main() {
 	// Load .env file
-	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
-	if err != nil {
-		log.Fatal(err)
-	}
-	environmentPath := filepath.Join(dir, ".env")
-	err = godotenv.Load(environmentPath)
-	if err != nil {
-		log.Fatal(err)
-	}
+	// dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+	// environmentPath := filepath.Join(dir, ".env")
+	// err = godotenv.Load(environmentPath)
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
 
 	app := pocketbase.New()
 
@@ -44,36 +38,36 @@ func main() {
 			return c.JSON(http.StatusOK, map[string]string{"message": "Hello there this is a new start " + name})
 		} /* optional middlewares */)
 
-		e.Router.POST("/api/v1/chat", func(c echo.Context) error {
-			data := apis.RequestInfo(c).Data
+		// e.Router.POST("/api/v1/chat", func(c echo.Context) error {
+		// 	data := apis.RequestInfo(c).Data
 
-			question := data["message"]
+		// 	question := data["message"]
 
-			var str_question string
+		// 	var str_question string
 
-			str_question, ok := question.(string)
+		// 	str_question, ok := question.(string)
 
-			if !ok {
-				log.Fatal("Question not string")
-			}
+		// 	if !ok {
+		// 		log.Fatal("Question not string")
+		// 	}
 
-			ctx := context.Background()
-			client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
+		// 	ctx := context.Background()
+		// 	client, err := genai.NewClient(ctx, option.WithAPIKey(os.Getenv("GEMINI_API_KEY")))
 
-			if err != nil {
-				log.Fatal(err)
-			}
-			model := client.GenerativeModel("gemini-1.5-flash")
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
+		// 	model := client.GenerativeModel("gemini-1.5-flash")
 
-			resp, err := model.GenerateContent(ctx, genai.Text(str_question))
+		// 	resp, err := model.GenerateContent(ctx, genai.Text(str_question))
 
-			if err != nil {
-				log.Fatal(err)
-			}
+		// 	if err != nil {
+		// 		log.Fatal(err)
+		// 	}
 
-			return c.JSON(http.StatusOK, map[string]any{"response": resp.Candidates[0].Content.Parts})
+		// 	return c.JSON(http.StatusOK, map[string]any{"response": resp.Candidates[0].Content.Parts})
 
-		})
+		// })
 
 		return nil
 	})
